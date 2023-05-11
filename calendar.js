@@ -1,28 +1,24 @@
-const getDate = function (month) {
-  const date = new Date();
-  date.setMonth(month - 1);
+const getDate = function (month, year) {
+  const date = new Date(year, month - 1);
   return date.toString().split(" ").slice(1, 4);
 }
 
-const getNoOfDays = function (month) {
-  const date = new Date(2023, month);
+const getNoOfDays = function (month, year) {
+  const date = new Date(year, month);
 
   return date.getUTCDate();
 }
 
-const getFirstDayIndex = function (month) {
-  const date = new Date();
-  date.setUTCMonth(month);
-  date.setUTCDate(1);
-
-  return date.getUTCDay();
+const getFirstDayIndex = function (month, year) {
+  const date = new Date(year, month - 1, 1);
+  return date.getDay();
 }
 
-const createCalendar = function (month) {
+const createCalendar = function (month, year = 2023) {
   const daysOfWeek = [" Su", " Mo", " Tu", " We", " Th", " Fr", " Sa"];
   const dates = new Array(7).fill("");
-  const noOfDays = getNoOfDays(month);
-  const firstDayIndex = getFirstDayIndex(month - 1);
+  const noOfDays = getNoOfDays(month, year);
+  const firstDayIndex = getFirstDayIndex(month, year);
   let index = firstDayIndex;
 
   for (let date = 1; date <= noOfDays; date++) {
@@ -32,8 +28,8 @@ const createCalendar = function (month) {
   return daysOfWeek.concat(dates);
 }
 
-const displayCalender = function (calendar, monthIndex) {
-  const [month, currentDay, year] = getDate(monthIndex);
+const displayCalender = function (calendar, monthIndex, currentYear = 2023) {
+  const [month, currentDay, year] = getDate(monthIndex, currentYear);
 
   const cal = calendar.reduce(function (month, day, index) {
     let weekRow = "";
@@ -69,7 +65,7 @@ const main = function () {
   }
   const year = process.argv[3];
   const calendar = createCalendar(month, year);
-  displayCalender(calendar, month);
+  displayCalender(calendar, month, year);
 }
 
 main();
