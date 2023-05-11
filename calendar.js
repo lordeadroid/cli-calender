@@ -19,7 +19,7 @@ const getFirstDayIndex = function (month) {
 }
 
 const createCalendar = function (month) {
-  const daysOfWeek = [" Su", " Mo", " Tu", " We", " Th", " Fr", "Sa"];
+  const daysOfWeek = [" Su", " Mo", " Tu", " We", " Th", " Fr", " Sa"];
   const dates = new Array(7).fill("");
   const noOfDays = getNoOfDays(month);
   const firstDayIndex = getFirstDayIndex(month - 1);
@@ -36,27 +36,40 @@ const displayCalender = function (calendar, monthIndex) {
   const [month, currentDay, year] = getDate(monthIndex);
 
   const cal = calendar.reduce(function (month, day, index) {
-    let week = "";
+    let weekRow = "";
+
     if (index % 7 === 0) {
-      week += "\n";
+      weekRow += "\n";
     }
 
     if (+currentDay === day) {
       day = "\033[0;31m" + day.toString().padStart(3) + "\033[0m";
     }
 
-    week += day.toString().padStart(3);
-    return month + week;
+    weekRow += day.toString().padStart(3);
+
+    return month.concat(weekRow);
   });
 
   console.log(month.padStart(10), year.padEnd(10));
   console.log(cal);
 }
 
+const showUsage = function () {
+  const usageMessage = "Usage: node.js calendar.js month [year]";
+
+  console.log(usageMessage);
+}
+
 const main = function () {
   const month = process.argv[2];
-  const cal = createCalendar(month);
-  displayCalender(cal, month);
+  if (month === undefined || month > 12 || month < 1) {
+    showUsage();
+    return;
+  }
+  const year = process.argv[3];
+  const calendar = createCalendar(month, year);
+  displayCalender(calendar, month);
 }
 
 main();
