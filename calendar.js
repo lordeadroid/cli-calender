@@ -5,54 +5,61 @@ const getDate = function (month, year) {
 
 const getNoOfDays = function (month, year) {
   const date = new Date(year, month);
-
   return date.getUTCDate();
 }
 
 const getFirstDayIndex = function (month, year) {
-  const date = new Date(year, month - 1, 1);
+  const date = new Date(year, month - 1);
   return date.getDay();
 }
 
-const createCalendar = function (month, year = 2023) {
-  const daysOfWeek = [" Su", " Mo", " Tu", " We", " Th", " Fr", " Sa"];
-  const dates = new Array(7).fill("");
-  const noOfDays = getNoOfDays(month, year);
-  const firstDayIndex = getFirstDayIndex(month, year);
-  let index = firstDayIndex;
 
-  for (let date = 1; date <= noOfDays; date++) {
-    dates[index++] = date;
+class Calendar {
+  #month;
+  #year;
+
+  constructor(month, year = 2023) {
+    this.#month = month;
+    this.#year = year;
+  };
+
+  createCalendar() {
+    const daysOfWeek = [" Su", " Mo", " Tu", " We", " Th", " Fr", " Sa"];
+    const dates = new Array(7).fill("");
+    const noOfDays = getNoOfDays(this.#month, this.#year);
+    const firstDayIndex = getFirstDayIndex(this.#month, this.#year);
+    let index = firstDayIndex;
+
+    for (let date = 1; date <= noOfDays; date++) {
+      dates[index++] = date;
+    }
+
+    return daysOfWeek.concat(dates);
   }
 
-  return daysOfWeek.concat(dates);
-}
+  toString() {
+    const [month, _, year] = getDate(this.#month, this.#year);
 
-const displayCalender = function (calendar, monthIndex, currentYear = 2023) {
-  const [month, currentDay, year] = getDate(monthIndex, currentYear);
+    const cal = this.createCalendar();
+    const calendar = cal.reduce(function (month, day, index) {
+      let weekRow = "";
 
-  const cal = calendar.reduce(function (month, day, index) {
-    let weekRow = "";
+      if (index % 7 === 0) {
+        weekRow += "\n";
+      }
 
-    if (index % 7 === 0) {
-      weekRow += "\n";
-    }
+      weekRow += day.toString().padStart(3);
 
-    if (+currentDay === day) {
-      day = "\033[0;31m" + day.toString().padStart(3) + "\033[0m";
-    }
+      return month.concat(weekRow);
+    });
 
-    weekRow += day.toString().padStart(3);
-
-    return month.concat(weekRow);
-  });
-
-  console.log(month.padStart(10), year.padEnd(10));
-  console.log(cal);
+    console.log(month.padStart(10), year.padEnd(10));
+    console.log(calendar);
+  }
 }
 
 const showUsage = function () {
-  const usageMessage = "Usage: node.js calendar.js month [year]";
+  const usageMessage = "Usage: node calendar.js month [year]";
 
   console.log(usageMessage);
 }
@@ -64,8 +71,8 @@ const main = function () {
     return;
   }
   const year = process.argv[3];
-  const calendar = createCalendar(month, year);
-  displayCalender(calendar, month, year);
+  const calendar = new Calendar(month, year);
+calendar.toString();
 }
 
 main();
