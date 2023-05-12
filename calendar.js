@@ -27,8 +27,8 @@ class Calendar {
     const noOfDays = getNoOfDays(this.#month, this.#year);
     const firstDayIndex = getFirstDayIndex(this.#month, this.#year);
     const spaces = new Array(firstDayIndex).fill("");
-    const dates = new Array(noOfDays).fill(0).map(function (_, i) {
-      return i + 1
+    const dates = new Array(noOfDays).fill(0).map(function (_, index) {
+      return index + 1;
     });
 
     return daysOfWeek.concat(spaces, dates);
