@@ -1,20 +1,25 @@
 const { Calendar } = require("./calendar.js");
 
 const showUsage = function () {
-  const usageMessage = "Usage: node calendar.js month[0 - 12] [year]";
+  const usageMessage = "Usage: node main.js month[0-12] [year]";
 
   console.log(usageMessage);
-}
+};
+
+const isValidArgs = function(month) {
+  return month === undefined || month > 12 || month < 1;
+};
 
 const main = function () {
   const month = process.argv[2];
-  if (month === undefined || month > 12 || month < 1) {
+  if (isValidArgs(month)) {
     showUsage();
-    return 127;
+    process.exit(127);
   }
+
   const year = process.argv[3];
   const calendar = new Calendar(month, year);
-  calendar.toString();
-}
+  console.log(calendar.toString());
+};
 
 main();

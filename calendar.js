@@ -1,17 +1,17 @@
 const getDate = function (month, year) {
   const date = new Date(year, month - 1);
   return date.toString().split(" ").slice(1, 4);
-}
+};
 
 const getNoOfDays = function (month, year) {
   const date = new Date(year, month);
   return date.getUTCDate();
-}
+};
 
 const getFirstDayIndex = function (month, year) {
   const date = new Date(year, month - 1);
   return date.getDay();
-}
+};
 
 class Calendar {
   #month;
@@ -22,34 +22,31 @@ class Calendar {
     this.#year = year;
   };
 
-  createCalendar() {
-    const daysOfWeek = [" Su", " Mo", " Tu", " We", " Th", " Fr", " Sa"];
-    const dates = new Array(7).fill("");
+  #createCalendar() {
+    const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
     const noOfDays = getNoOfDays(this.#month, this.#year);
     const firstDayIndex = getFirstDayIndex(this.#month, this.#year);
-    let index = firstDayIndex;
+    const spaces = new Array(firstDayIndex).fill("");
+    const dates = new Array(noOfDays).fill(0).map(function (_, i) {
+      return i + 1
+    });
 
-    for (let date = 1; date <= noOfDays; date++) {
-      dates[index++] = date;
-    }
-
-    return daysOfWeek.concat(dates);
-  }
+    return daysOfWeek.concat(spaces, dates);
+  };
 
   toString() {
     const [month, _, year] = getDate(this.#month, this.#year);
-    const cal = this.createCalendar();
-    const calendar = cal.reduce(function (month, day, index) {
-      if (index % 7 === 0) {
-        month += "\n";
-      }
+    const cal = this.#createCalendar();
+    const separators = [" ", " ", " ", " ", " ", " ", "\n"];
 
-      return month.concat(day.toString().padStart(3));
-    });
+    const calendar = cal.reduce(function (context, day, index) {
+      context += day.toString().padStart(2) + separators[index % 7];
+      return context;
+    }, "");
 
-    console.log(month.padStart(10), year.padEnd(10));
-    console.log(calendar);
-  }
-}
+    const title = month.padStart(9) + " " + year.padEnd(9) + "\n";
+    return title.concat(calendar);
+  };
+};
 
 exports.Calendar = Calendar;
