@@ -13,7 +13,6 @@ const getFirstDayIndex = function (month, year) {
   return date.getDay();
 }
 
-
 class Calendar {
   #month;
   #year;
@@ -39,18 +38,13 @@ class Calendar {
 
   toString() {
     const [month, _, year] = getDate(this.#month, this.#year);
-
     const cal = this.createCalendar();
     const calendar = cal.reduce(function (month, day, index) {
-      let weekRow = "";
-
       if (index % 7 === 0) {
-        weekRow += "\n";
+        month += "\n";
       }
 
-      weekRow += day.toString().padStart(3);
-
-      return month.concat(weekRow);
+      return month.concat(day.toString().padStart(3));
     });
 
     console.log(month.padStart(10), year.padEnd(10));
@@ -59,7 +53,7 @@ class Calendar {
 }
 
 const showUsage = function () {
-  const usageMessage = "Usage: node calendar.js month [year]";
+  const usageMessage = "Usage: node calendar.js month[0 - 12] [year]";
 
   console.log(usageMessage);
 }
@@ -68,11 +62,11 @@ const main = function () {
   const month = process.argv[2];
   if (month === undefined || month > 12 || month < 1) {
     showUsage();
-    return;
+    return 127;
   }
   const year = process.argv[3];
   const calendar = new Calendar(month, year);
-calendar.toString();
+  calendar.toString();
 }
 
 main();
